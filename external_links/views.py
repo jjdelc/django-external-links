@@ -16,6 +16,5 @@ def external_link(request):
         # Someone got here without the link param
         # Redirect to Home as default
         link = '/'
-    
-    return HttpResponseRedirect(link)
 
+    return HttpResponseRedirect(link)

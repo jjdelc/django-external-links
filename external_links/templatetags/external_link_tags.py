@@ -4,7 +4,7 @@
     External links template tags
 """
 
-from urllib import quote
+from urllib import urlencode
 
 from django.template import Library
 from django.core.urlresolvers import reverse
@@ -18,4 +18,6 @@ def external(link):
     keep track of the clicked link
     """
     redirect_endpoint = reverse('external_link')
-    return redirect_endpoint + '?link=' + quote(link, safe='')
+    params = urlencode({'link': link})
+
+    return redirect_endpoint + params
