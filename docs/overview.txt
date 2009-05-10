@@ -1,0 +1,80 @@
+=====================
+Django External links
+=====================
+
+A generic application to keep track of the clicks on the external links
+in your sites
+
+Installation
+============
+
+1. Get the code
+    - Get a tarball
+    - Pull from the Github repo:
+        http://github.com/jjdelc/django-external-links
+
+2. Add 'external_links' in your PYTHONPATH
+    - Add a symlink to your proj dir
+    - Put it you your python site-packages
+    - Anything else that does it
+
+3. Add 'external_links' to your INSTALLED_APPS
+
+4. Run ./manage.py syncdb
+    [proj] ./manage.py syncdb
+    Creating table external_links_linkclick
+    Installing index for external_links.LinkClick model
+
+5. Add the UrlConf somewhere in your URLs
+    urlpatterns += patterns(''
+        url(r'^external/', include('external_links.urls')),
+    )
+
+
+Keeping track of links
+======================
+Every external link on the site should actually be a redirection to
+the external link endpoint, which will keep track of the click and 
+perform the redirection to the final site
+
+Reference
+=========
+
+TemplateTag
+~~~~~~~~~~~
+    This is what you will be using the most, add
+        {% load external_link_tags %}
+    anywhere in your templates, now for each external link use
+    the {% external %} tag:
+        <a href="{% external "http://example.com" %}">Other site</a>
+    
+    Which should translate to:
+        <a href="/external/?link=http%3A%2F%2example.com">Other site</a>
+
+
+Models
+~~~~~~
+    The LinkClick model represents a clicked link, it stores:
+        The logged user, or None if it's an annonymous session
+        The Date and Time
+        The referer page from where the click was made
+        The destination site
+        User's IP address
+
+    To use, call the 'store' method with the view's Request object
+    as parameter
+        >>> destination = request.GET['link']
+        >>> clicked_link = LinkClick(link=destination)
+        >>> clicked_link.store(request)
+
+    But you shouldn't need to do that, it's all done in the view
+
+
+Views
+~~~~~
+    There's an external_link view that registers all the links
+    that go through the external_links redirection.
+
+    If the view is sent with no "link" GET param, it will default
+    to '/'
+
