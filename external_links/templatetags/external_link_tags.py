@@ -20,4 +20,4 @@ def external(link):
     redirect_endpoint = reverse('external_link')
     params = urlencode({'link': link})
 
-    return redirect_endpoint + params
+    return redirect_endpoint + '?' +  params
