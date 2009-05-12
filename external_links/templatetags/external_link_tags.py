@@ -27,6 +27,12 @@ def external(link):
 
 @register.tag(name='externalblock')
 def do_external_block(parser, token):
+    """
+    {% externalblock %}
+    text with <a href="">content</a> to be converted to external
+    links
+    {% endexternalblock %}
+    """
     node_list = parser.parse(('endexternalblock'))
     parser.delete_first_token()
     return ExternalLink(node_list)
@@ -41,24 +47,30 @@ class ExternalLink(Node):
     """
     def __init__(self, nodelist):
         self.nodelist = nodelist
-       
-    def render(self, context):
+
+
+    def replace_links(self, original_text):
         """
-        1. Split the nodes contents in pieces
-        2. Translate that start with 'http' to an external link
-        3. Join it all back together for printing
+        Here's all the magic
+            1. Split the nodes contents in pieces
+            2. Translate that start with 'http' to an external link
+            3. Join it all back together for printing
         """
         redirect_endpoint = reverse('external_link')
-        output = self.nodelist.render(context)
-        pieces = EXTLINKS.split(output)
+        pieces = EXTLINKS.split(original_text)
         result = []
 
         for piece in pieces:
             if piece.startswith('http:/'):
                 params = urlencode({'link': piece})
-                result.append(redirect_endpoint + '?' + params)
+                result.append('href="' + redirect_endpoint + '?' + params + '"')
             else:
                 result.append(piece)
 
-        return 'href="'.join(result)
+        return ''.join(result)
+
+       
+    def render(self, context):
+        output = self.nodelist.render(context)
+        return self.replace_links(output)
 

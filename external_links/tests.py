@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.template import Template, Context
 
 from external_links.models import LinkClick
+from external_links.templatetags.external_link_tags import ExternalLink
 
 DESTINATION = 'http://example.com/?param=val&param2=val2'
 
@@ -31,5 +32,24 @@ class ExternalLinkTest(TestCase):
             '{%% external "%s" %%}' % DESTINATION)
         external_url = reverse('external_link')
         params = urlencode({'link': DESTINATION})
-        self.assertEqual(template.render(ctx), external_url + params)
-        
+        self.assertEqual(template.render(ctx), external_url + '?' + params)
+
+    def test_blocktag(self):
+        external_link = ExternalLink([])
+        base = 'link1: <a href="%(link1)s" title="">hey</a>, <a href="%(link2)s">hoho</a> wee'
+
+        original_text = base % {
+            'link1': DESTINATION,
+            'link2': DESTINATION
+        } 
+
+        external_url = reverse('external_link')
+        params = urlencode({'link': DESTINATION})
+
+        final_dest = external_url + '?' + params
+        final_text = base % {
+            'link1': final_dest,
+            'link2': final_dest,
+        }
+        self.assertEqual(final_text, 
+            external_link.replace_links(original_text))
