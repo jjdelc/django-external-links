@@ -40,8 +40,12 @@ perform the redirection to the final site
 Reference
 =========
 
-TemplateTag
-~~~~~~~~~~~
+TemplateTags
+~~~~~~~~~~~~
+
+'external' tag
+--------------
+
     This is what you will be using the most, add
         {% load external_link_tags %}
     anywhere in your templates, now for each external link use
@@ -49,7 +53,26 @@ TemplateTag
         <a href="{% external "http://example.com" %}">Other site</a>
     
     Which should translate to:
-        <a href="/external/?link=http%3A%2F%2example.com">Other site</a>
+        <a href="/external/?link=http%3a%2f%2example.com">Other site</a>
+
+externalblock block tag
+-----------------------
+
+    On cases where you will have several links in a variable area, say a blog
+    post or user generated content, you can wrap that around the 
+    {% externalblock %} block
+
+        {% externalblock %}
+        {{ entry.text }}
+        {% endexternalblock %}
+
+    The entry text has this content
+        {% externalblock %}
+        My text <a href="http://example.com">my link</a>
+        {% endexternalblock %}
+
+    Will finally render:
+        My text <a href="/external/?link=http%3a%2f%2example.com">my link</a>
 
 
 Models
