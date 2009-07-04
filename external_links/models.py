@@ -3,6 +3,7 @@
 from django.db import models
 
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 
 class LinkClick(models.Model):
     """
@@ -12,6 +13,7 @@ class LinkClick(models.Model):
             clicked_link.store(request)
     """
     user = models.ForeignKey(User, null=True)
+    site = models.ForeignKey(Site)
     link = models.CharField(max_length=512)
     referer = models.CharField(max_length=512)
     ip_addr = models.IPAddressField()
@@ -27,6 +29,7 @@ class LinkClick(models.Model):
             user = request.user
 
         self.user = user
+        self.site = Site.objects.get_current()
         self.referer = request.META.get('HTTP_REFERER','')
         self.ip_addr = request.META['REMOTE_ADDR']
         self.save()
