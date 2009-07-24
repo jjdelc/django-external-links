@@ -101,3 +101,28 @@ Views
     If the view is sent with no "link" GET param, it will default
     to '/'
 
+Admin
+~~~~~
+    The app comes with some Admin fun
+
+
+Regular clicks record
+---------------------
+    Add these lines to your admin file, the 'LinkClickAdmin' ModelAdmin has a
+    set of preconfigured attributes, filters and hierarchy set that you'll need
+    when looking at the clicks made.
+    Simply add these lines to your admin file
+
+        from external_links.admin import LinkClickAdmin
+        admin.register(LinkClickAdmin)
+
+Top clicked links
+-----------------
+    There is also an included view to display the top 15 clicked links. To
+    install it simply add the following urlconf:
+    
+        # Note that it has to be before the regular admin urlconf
+        url(r'^admin/', include('external_links.admin.urls')),
+        url(r'^admin/(.*)', admin.root),
+
+    Now you can access /admin/top/ and will display the top clicked links
