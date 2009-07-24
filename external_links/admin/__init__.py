@@ -8,5 +8,4 @@ class LinkClickAdmin(admin.ModelAdmin):
     search_fields = ('link', 'referer', 'ip_addr' )
     date_hierarchy = 'date'
     list_filter = ('site', )
-    list_display = ('link', 'referer', 'site', 
-        'ip_addr', 'date', 'time')
+    list_display = ('link', 'referer', 'ip_addr', 'date', 'time')
