@@ -1,8 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load adminmedia admin_list %}
 
-{% block extrahead %}
-{% endblock %}
+{% block title %}Top clicked links{% endblock %}
 {% block coltype %}flex{% endblock %}
 {% block bodyclass %}change-list{% endblock %}
 {% block stylesheet %}{% admin_media_prefix %}css/changelists.css{% endblock %}
@@ -21,8 +20,7 @@
 <tbody>
 
 {% for link in object_list %}
-<tr class="row{%cycle 1,2%}"><th><a
-href="../external_links/linkclick/?q={{link.link}}" title="View click
+<tr class="row{%cycle 1,2%}"><th><a href="../external_links/linkclick/?q={{link.link|urlencode}}" title="View click
 details for &quot;{{link.link}}&quot;">{{link.link}}</a></th><td>{{link.link__count}}</td></tr>
 {% endfor %}
 </tbody>
