@@ -18,6 +18,10 @@ def external(link):
     """
     Replaces an external link with a redirect to
     keep track of the clicked link
+
+    To be used as:
+        {% external "http://google.com/" %}
+
     """
     redirect_endpoint = reverse('external_link')
     params = urlencode({'link': link})
