@@ -37,9 +37,14 @@ def do_external_block(parser, token):
     links
     {% endexternalblock %}
     """
+    bits = token.split_contents()[::-1]
+    tag_name = bits.pop()
+    prefix = ''
+    if bits:
+        prefix = bits.pop()
     node_list = parser.parse(('endexternalblock'))
     parser.delete_first_token()
-    return ExternalLink(node_list)
+    return ExternalLink(node_list, prefix)
     
 
 EXTLINKS = re.compile(r'''href="(?P<link>http[^>"]*)"''')
@@ -49,8 +54,9 @@ class ExternalLink(Node):
     Should look for any href reference and translate that link
     into an externa link redirect
     """
-    def __init__(self, nodelist):
+    def __init__(self, nodelist, prefix=''):
         self.nodelist = nodelist
+        self.prefix = prefix
 
 
     def replace_links(self, original_text):
@@ -60,7 +66,7 @@ class ExternalLink(Node):
             2. Translate that start with 'http' to an external link
             3. Join it all back together for printing
         """
-        redirect_endpoint = reverse('external_link')
+        redirect_endpoint = self.prefix + reverse('external_link')
         pieces = EXTLINKS.split(original_text)
         result = []
 
