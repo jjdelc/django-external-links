@@ -72,6 +72,10 @@ class ExternalLink(Node):
 
         for piece in pieces:
             if piece.startswith('http:/'):
+                # Replace the &amp; as the & will be urlencoded. If we don't do
+                # this, the resulting url will be &amp;amp; and GET params
+                # will get lost :(
+                piece = piece.replace('&amp;', '&')
                 params = urlencode({'link': piece})
                 result.append('href="' + redirect_endpoint + '?' + params + '"')
             else:
